@@ -1,0 +1,27 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: edumerge-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: edumerge
+      POSTGRES_USER: edumerge
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-edumerge}
+    ports: ["5432:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+  backend:
+    build: ./backend
+    depends_on: [postgres]
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/edumerge
+      DB_USER: edumerge
+      DB_PASSWORD: ${DB_PASSWORD:-edumerge}
+      JWT_SECRET: ${JWT_SECRET:-change-this-development-secret-to-a-long-random-value-123456789}
+    ports: ["8080:8080"]
+  frontend:
+    build: ./frontend
+    depends_on: [backend]
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8080/api
+    ports: ["3000:3000"]
+volumes: {pgdata: {}}

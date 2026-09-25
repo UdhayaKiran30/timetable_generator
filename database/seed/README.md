@@ -1,0 +1,1 @@
+Seed data is loaded by Spring Boot's DataSeeder on first startup. It creates departments, divisions, faculty, subjects, rooms, five weekdays × six periods, faculty availability, teaching assignments and demo users.
